@@ -13,13 +13,13 @@ public interface PostService {
 
     void deletePost(Integer postId);
 
-    PagedApiResponse<List<PostDto>> getAllPosts(Integer pageNumber, Integer pageSize);
+    PagedApiResponse<List<PostDto>> getAllPosts(Integer pageNumber, Integer pageSize,String sortBy);
 
     PostDto getPostById(Integer postId);
 
-    PagedApiResponse<List<PostDto>> getPostsByCategory(Integer categoryId,Integer pageNumber,Integer pageSize);
+    PagedApiResponse<List<PostDto>> getPostsByCategory(Integer categoryId,Integer pageNumber,Integer pageSize,String sortBy);
 
-    PagedApiResponse<List<PostDto>> getPostsByUser(Integer userId,Integer pageNumber,Integer pageSize);
+    PagedApiResponse<List<PostDto>> getPostsByUser(Integer userId,Integer pageNumber,Integer pageSize,String sortBy);
 
     List<PostDto> searchPost(String keyword);
 }

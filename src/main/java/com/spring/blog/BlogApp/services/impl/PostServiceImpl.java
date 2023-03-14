@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -66,8 +67,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PagedApiResponse<List<PostDto>> getAllPosts(Integer pageNumber, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+    public PagedApiResponse<List<PostDto>> getAllPosts(Integer pageNumber, Integer pageSize,String sortBy) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize,Sort.by(sortBy).ascending());
         Page<Post> pagedPosts = postRepo.findAll(pageable);
         List<PostDto> posts = pagedPosts.getContent().stream().map(post -> modelMapper.map(post, PostDto.class)).toList();
         return ResponseUtil.getPagedApiResponse(pagedPosts, posts);
@@ -80,18 +81,18 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PagedApiResponse<List<PostDto>> getPostsByCategory(Integer categoryId, Integer pageNumber, Integer pageSize) {
+    public PagedApiResponse<List<PostDto>> getPostsByCategory(Integer categoryId, Integer pageNumber, Integer pageSize,String sortBy) {
         Category category = categoryRepo.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category", "Id", categoryId));
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).ascending());
         Page<Post> pagedPosts = postRepo.findByCategory(category, pageable);
         List<PostDto> posts = pagedPosts.getContent().stream().map(post -> modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
         return ResponseUtil.getPagedApiResponse(pagedPosts, posts);
     }
 
     @Override
-    public PagedApiResponse<List<PostDto>> getPostsByUser(Integer userId, Integer pageNumber, Integer pageSize) {
+    public PagedApiResponse<List<PostDto>> getPostsByUser(Integer userId, Integer pageNumber, Integer pageSize, String sortBy) {
         User user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "Id", userId));
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize,Sort.by(sortBy));
         Page<Post> pagedPosts = postRepo.findByUser(user, pageable);
         List<PostDto> posts = pagedPosts.getContent().stream().map(post -> modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
         return ResponseUtil.getPagedApiResponse(pagedPosts, posts);

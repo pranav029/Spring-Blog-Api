@@ -31,9 +31,10 @@ public class PostController {
     public ResponseEntity<PagedApiResponse<?>> getPostsByUser(
             @PathVariable Integer userId,
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize
+            @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "postId", required = false) String sortBy
     ) {
-        PagedApiResponse<List<PostDto>> response = postService.getPostsByUser(userId, pageNumber, pageSize);
+        PagedApiResponse<List<PostDto>> response = postService.getPostsByUser(userId, pageNumber, pageSize, sortBy);
         return ResponseEntity.ok(response);
     }
 
@@ -41,18 +42,20 @@ public class PostController {
     public ResponseEntity<PagedApiResponse<?>> getPostsByCategory(
             @PathVariable Integer categoryId,
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize
+            @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "postId", required = false) String sortBy
     ) {
-        PagedApiResponse<List<PostDto>> response = postService.getPostsByCategory(categoryId, pageNumber, pageSize);
+        PagedApiResponse<List<PostDto>> response = postService.getPostsByCategory(categoryId, pageNumber, pageSize, sortBy);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/posts")
     public ResponseEntity<PagedApiResponse<List<PostDto>>> getAllPosts(
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize
+            @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "postId", required = false) String sortBy
     ) {
-        PagedApiResponse<List<PostDto>> response = postService.getAllPosts(pageNumber, pageSize);
+        PagedApiResponse<List<PostDto>> response = postService.getAllPosts(pageNumber, pageSize,sortBy);
         return ResponseEntity.ok(response);
     }
 
