@@ -99,7 +99,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> searchPost(String keyword) {
-        return null;
+    public PagedApiResponse<List<PostDto>> searchPost(String keyword, Integer pageNumber, Integer pageSize, String sortBy) {
+        Pageable pageable = PageRequest.of(pageNumber,pageSize,Sort.by(sortBy).ascending());
+        Page<Post> pagedPosts = postRepo.findByTitleContaining(keyword,pageable);
+        List<PostDto> posts = pagedPosts.getContent().stream().map(post -> modelMapper.map(post,PostDto.class)).toList();
+        return ResponseUtil.getPagedApiResponse(pagedPosts,posts);
     }
 }

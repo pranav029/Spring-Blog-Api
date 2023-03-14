@@ -21,5 +21,5 @@ public interface PostService {
 
     PagedApiResponse<List<PostDto>> getPostsByUser(Integer userId,Integer pageNumber,Integer pageSize,String sortBy);
 
-    List<PostDto> searchPost(String keyword);
+    PagedApiResponse<List<PostDto>> searchPost(String keyword,Integer pageNumber,Integer pageSize,String sortBy);
 }

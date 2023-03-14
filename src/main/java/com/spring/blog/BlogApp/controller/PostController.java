@@ -49,7 +49,7 @@ public class PostController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/posts")
+    @GetMapping("/posts/all")
     public ResponseEntity<PagedApiResponse<List<PostDto>>> getAllPosts(
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize,
@@ -75,5 +75,16 @@ public class PostController {
     public ResponseEntity<ApiResponseWithContent<PostDto>> updatePost(@RequestBody PostDto postDto, @PathVariable Integer postId) {
         PostDto updatedPost = postService.updatePost(postDto, postId);
         return ResponseEntity.ok(new ApiResponseWithContent<>("Post updated Successfully", true, updatedPost));
+    }
+
+    @GetMapping("/posts")
+    public ResponseEntity<PagedApiResponse<List<PostDto>>> searchPost(
+            @RequestParam(value = "q",required = true) String q,
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "postId", required = false) String sortBy
+    ){
+        PagedApiResponse<List<PostDto>> response = postService.searchPost(q,pageNumber,pageSize,sortBy);
+        return ResponseEntity.ok(response);
     }
 }
