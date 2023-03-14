@@ -1,5 +1,6 @@
 package com.spring.blog.BlogApp.services;
 
+import com.spring.blog.BlogApp.payloads.PagedApiResponse;
 import com.spring.blog.BlogApp.payloads.PostDto;
 
 import java.util.List;
@@ -12,13 +13,13 @@ public interface PostService {
 
     void deletePost(Integer postId);
 
-    List<PostDto> getAllPosts();
+    PagedApiResponse<List<PostDto>> getAllPosts(Integer pageNumber, Integer pageSize);
 
     PostDto getPostById(Integer postId);
 
-    List<PostDto> getPostsByCategory(Integer categoryId);
+    PagedApiResponse<List<PostDto>> getPostsByCategory(Integer categoryId,Integer pageNumber,Integer pageSize);
 
-    List<PostDto> getPostsByUser(Integer userId);
+    PagedApiResponse<List<PostDto>> getPostsByUser(Integer userId,Integer pageNumber,Integer pageSize);
 
     List<PostDto> searchPost(String keyword);
 }

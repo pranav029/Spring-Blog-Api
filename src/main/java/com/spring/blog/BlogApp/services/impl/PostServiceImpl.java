@@ -4,13 +4,18 @@ import com.spring.blog.BlogApp.entities.Category;
 import com.spring.blog.BlogApp.entities.Post;
 import com.spring.blog.BlogApp.entities.User;
 import com.spring.blog.BlogApp.exceptions.ResourceNotFoundException;
+import com.spring.blog.BlogApp.payloads.PagedApiResponse;
 import com.spring.blog.BlogApp.payloads.PostDto;
 import com.spring.blog.BlogApp.repositories.CategoryRepo;
 import com.spring.blog.BlogApp.repositories.PostRepo;
 import com.spring.blog.BlogApp.repositories.UserRepo;
 import com.spring.blog.BlogApp.services.PostService;
+import com.spring.blog.BlogApp.utils.ResponseUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -40,7 +45,6 @@ public class PostServiceImpl implements PostService {
         post.setCreationDate(new Date());
         post.setUser(user);
         post.setCategory(category);
-
         Post newPost = postRepo.save(post);
         return modelMapper.map(newPost, PostDto.class);
     }
@@ -62,9 +66,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getAllPosts() {
-        List<Post> posts = postRepo.findAll();
-        return posts.stream().map(post -> modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
+    public PagedApiResponse<List<PostDto>> getAllPosts(Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Post> pagedPosts = postRepo.findAll(pageable);
+        List<PostDto> posts = pagedPosts.getContent().stream().map(post -> modelMapper.map(post, PostDto.class)).toList();
+        return ResponseUtil.getPagedApiResponse(pagedPosts, posts);
     }
 
     @Override
@@ -74,17 +80,21 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getPostsByCategory(Integer categoryId) {
+    public PagedApiResponse<List<PostDto>> getPostsByCategory(Integer categoryId, Integer pageNumber, Integer pageSize) {
         Category category = categoryRepo.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category", "Id", categoryId));
-        List<Post> posts = postRepo.findByCategory(category);
-        return posts.stream().map(post -> modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Post> pagedPosts = postRepo.findByCategory(category, pageable);
+        List<PostDto> posts = pagedPosts.getContent().stream().map(post -> modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
+        return ResponseUtil.getPagedApiResponse(pagedPosts, posts);
     }
 
     @Override
-    public List<PostDto> getPostsByUser(Integer userId) {
+    public PagedApiResponse<List<PostDto>> getPostsByUser(Integer userId, Integer pageNumber, Integer pageSize) {
         User user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "Id", userId));
-        List<Post> posts = postRepo.findByUser(user);
-        return posts.stream().map(post -> modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Post> pagedPosts = postRepo.findByUser(user, pageable);
+        List<PostDto> posts = pagedPosts.getContent().stream().map(post -> modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
+        return ResponseUtil.getPagedApiResponse(pagedPosts, posts);
     }
 
     @Override

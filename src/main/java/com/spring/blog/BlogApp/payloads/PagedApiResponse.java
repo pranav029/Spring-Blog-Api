@@ -9,7 +9,11 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApiResponse {
-    private String message;
-    private boolean success;
+public class PagedApiResponse<T> {
+    private int pageNumber;
+    private int pageSize;
+    private long totalElements;
+    private int totalPages;
+    private boolean lastPage;
+    private T content;
 }

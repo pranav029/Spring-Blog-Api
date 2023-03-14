@@ -1,6 +1,8 @@
 package com.spring.blog.BlogApp.controller;
 
 import com.spring.blog.BlogApp.payloads.ApiResponse;
+import com.spring.blog.BlogApp.payloads.ApiResponseWithContent;
+import com.spring.blog.BlogApp.payloads.PagedApiResponse;
 import com.spring.blog.BlogApp.payloads.PostDto;
 import com.spring.blog.BlogApp.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,50 +19,58 @@ public class PostController {
     private PostService postService;
 
     @PostMapping("/create/user/{userId}/category/{categoryId}/posts")
-    public ResponseEntity<ApiResponse<PostDto>> createPost(@RequestBody PostDto postDto,
-                                                           @PathVariable Integer userId,
-                                                           @PathVariable Integer categoryId) {
+    public ResponseEntity<ApiResponseWithContent<PostDto>> createPost(@RequestBody PostDto postDto,
+                                                                      @PathVariable Integer userId,
+                                                                      @PathVariable Integer categoryId) {
 
         PostDto createdPost = postService.createPost(postDto, userId, categoryId);
-        return new ResponseEntity<>(new ApiResponse<>("Post created successfully", true, createdPost), HttpStatus.CREATED);
+        return new ResponseEntity<>(new ApiResponseWithContent<>("Post created successfully", true, createdPost), HttpStatus.CREATED);
     }
 
     @GetMapping("/user/{userId}/posts")
-    public ResponseEntity<ApiResponse<?>> getPostsByUser(@PathVariable Integer userId){
-        List<PostDto> posts = postService.getPostsByUser(userId);
-        if (posts.isEmpty())return ResponseEntity.ok(new ApiResponse<>("No posts found",true,null));
-        return ResponseEntity.ok(new ApiResponse<>("Query Successfull",true,posts));
+    public ResponseEntity<PagedApiResponse<?>> getPostsByUser(
+            @PathVariable Integer userId,
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize
+    ) {
+        PagedApiResponse<List<PostDto>> response = postService.getPostsByUser(userId, pageNumber, pageSize);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/category/{categoryId}/posts")
-    public ResponseEntity<ApiResponse<?>> getPostsByCategory(@PathVariable Integer categoryId){
-        List<PostDto> posts = postService.getPostsByCategory(categoryId);
-        if (posts.isEmpty())return ResponseEntity.ok(new ApiResponse<>("No posts found",true,null));
-        return ResponseEntity.ok(new ApiResponse<>("Query Successfull",true,posts));
+    public ResponseEntity<PagedApiResponse<?>> getPostsByCategory(
+            @PathVariable Integer categoryId,
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize
+    ) {
+        PagedApiResponse<List<PostDto>> response = postService.getPostsByCategory(categoryId, pageNumber, pageSize);
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping(path = {"/posts","/posts/p-{pageSize}"})
-    public ResponseEntity<ApiResponse<List<PostDto>>> getAllPosts(){
-        List<PostDto> posts = postService.getAllPosts();
-        if(posts.isEmpty())return ResponseEntity.ok(new ApiResponse<>("No posts found",true,null));
-        return ResponseEntity.ok(new ApiResponse<>("Query Successfull",true,posts));
+    @GetMapping("/posts")
+    public ResponseEntity<PagedApiResponse<List<PostDto>>> getAllPosts(
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize
+    ) {
+        PagedApiResponse<List<PostDto>> response = postService.getAllPosts(pageNumber, pageSize);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/posts/{postId}")
-    public ResponseEntity<ApiResponse<PostDto>> getPostById(@PathVariable Integer postId){
+    public ResponseEntity<ApiResponseWithContent<PostDto>> getPostById(@PathVariable Integer postId) {
         PostDto post = postService.getPostById(postId);
-        return ResponseEntity.ok(new ApiResponse<>("Query Successfull",true,post));
+        return ResponseEntity.ok(new ApiResponseWithContent<>("Query Successfull", true, post));
     }
 
     @DeleteMapping("/delete/{postId}/posts")
-    public ResponseEntity<ApiResponse<?>> deletePost(@PathVariable Integer postId){
+    public ResponseEntity<ApiResponse> deletePost(@PathVariable Integer postId) {
         postService.deletePost(postId);
-        return ResponseEntity.ok(new ApiResponse<>("Post deleted Successfully",true,null));
+        return ResponseEntity.ok(new ApiResponse("Post deleted Successfully", true));
     }
 
     @PutMapping("/update/{postId}/posts")
-    public ResponseEntity<ApiResponse<PostDto>> updatePost(@RequestBody PostDto postDto,@PathVariable Integer postId){
-        PostDto updatedPost = postService.updatePost(postDto,postId);
-        return ResponseEntity.ok(new ApiResponse<>("Post updated Successfully",true,updatedPost));
+    public ResponseEntity<ApiResponseWithContent<PostDto>> updatePost(@RequestBody PostDto postDto, @PathVariable Integer postId) {
+        PostDto updatedPost = postService.updatePost(postDto, postId);
+        return ResponseEntity.ok(new ApiResponseWithContent<>("Post updated Successfully", true, updatedPost));
     }
 }
