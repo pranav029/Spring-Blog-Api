@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class UserDto {
-    private int id;
+    private int userId;
     @NotEmpty
     @Size(min = 5,message = "Username must be minimum 5 character long")
     private String name;

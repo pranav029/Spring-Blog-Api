@@ -1,13 +1,13 @@
 package com.spring.blog.BlogApp.payloads;
 
-import com.spring.blog.BlogApp.entities.Category;
-import com.spring.blog.BlogApp.entities.User;
-import jakarta.persistence.ManyToOne;
+import com.spring.blog.BlogApp.entities.Comment;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -20,4 +20,5 @@ public class PostDto {
     private Date creationDate;
     private CategoryDto category;
     private UserDto user;
+    private Set<CommentDto> comments = new HashSet<>();
 }
