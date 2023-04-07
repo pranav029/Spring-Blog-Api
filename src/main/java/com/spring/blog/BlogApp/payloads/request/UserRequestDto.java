@@ -1,4 +1,4 @@
-package com.spring.blog.BlogApp.payloads;
+package com.spring.blog.BlogApp.payloads.request;
 
 import jakarta.validation.constraints.*;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
-public class UserDto {
+public class UserRequestDto {
     private int userId;
     @NotEmpty
     @Size(min = 5,message = "Username must be minimum 5 character long")

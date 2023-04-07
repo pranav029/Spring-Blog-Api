@@ -2,7 +2,7 @@ package com.spring.blog.BlogApp.services.impl;
 
 import com.spring.blog.BlogApp.entities.User;
 import com.spring.blog.BlogApp.exceptions.ResourceNotFoundException;
-import com.spring.blog.BlogApp.payloads.UserDto;
+import com.spring.blog.BlogApp.payloads.request.UserRequestDto;
 import com.spring.blog.BlogApp.repositories.UserRepo;
 import com.spring.blog.BlogApp.services.UserService;
 import org.modelmapper.ModelMapper;
@@ -21,37 +21,37 @@ public class UserServiceImpl implements UserService {
     private ModelMapper modelMapper;
 
     @Override
-    public UserDto createUser(UserDto userDto) {
+    public UserRequestDto createUser(UserRequestDto userDto) {
         User user = modelMapper.map(userDto, User.class);
         User savedUser = userRepo.save(user);
-        return modelMapper.map(savedUser,UserDto.class);
+        return modelMapper.map(savedUser, UserRequestDto.class);
     }
 
     @Override
-    public UserDto updateUser(UserDto userDto, Integer id) {
+    public UserRequestDto updateUser(UserRequestDto userDto, Integer id) {
         User user = userRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
         user.setName(userDto.getName());
         user.setEmail(userDto.getEmail());
         user.setPassword(userDto.getPassword());
         user.setAbout(userDto.getAbout());
         User updatedUser = userRepo.save(user);
-        return modelMapper.map(updatedUser, UserDto.class);
+        return modelMapper.map(updatedUser, UserRequestDto.class);
     }
 
     @Override
-    public UserDto getUserById(Integer id) {
+    public UserRequestDto getUserById(Integer id) {
         User user = userRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", "Id", id));
-        return modelMapper.map(user, UserDto.class);
+        return modelMapper.map(user, UserRequestDto.class);
     }
 
     @Override
-    public List<UserDto> getAllUsers() {
+    public List<UserRequestDto> getAllUsers() {
         List<User> users = userRepo.findAll();
-        return users.stream().map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
+        return users.stream().map(user -> modelMapper.map(user, UserRequestDto.class)).collect(Collectors.toList());
     }
 
     @Override
-    public void deleteUser(UserDto userDto) {
+    public void deleteUser(UserRequestDto userDto) {
         User user = userRepo.findById(userDto.getUserId()).orElseThrow(() -> new ResourceNotFoundException("User", "Id", userDto.getUserId()));
         userRepo.delete(user);
     }

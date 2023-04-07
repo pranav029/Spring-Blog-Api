@@ -1,4 +1,4 @@
-package com.spring.blog.BlogApp.payloads;
+package com.spring.blog.BlogApp.payloads.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

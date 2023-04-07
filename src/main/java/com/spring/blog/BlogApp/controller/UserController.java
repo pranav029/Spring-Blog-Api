@@ -1,7 +1,7 @@
 package com.spring.blog.BlogApp.controller;
 
-import com.spring.blog.BlogApp.payloads.ApiResponseWithContent;
-import com.spring.blog.BlogApp.payloads.UserDto;
+import com.spring.blog.BlogApp.payloads.response.ApiResponseWithContent;
+import com.spring.blog.BlogApp.payloads.request.UserRequestDto;
 import com.spring.blog.BlogApp.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +18,14 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponseWithContent<UserDto>> createUser(@Valid @RequestBody UserDto userDto) {
-        UserDto createdUser = userService.createUser(userDto);
+    public ResponseEntity<ApiResponseWithContent<UserRequestDto>> createUser(@Valid @RequestBody UserRequestDto userDto) {
+        UserRequestDto createdUser = userService.createUser(userDto);
         return new ResponseEntity<>(new ApiResponseWithContent<>("User created successfully", true, createdUser), HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{userId}")
-    public ResponseEntity<ApiResponseWithContent<UserDto>> updateUser(@PathVariable Integer userId, @Valid @RequestBody UserDto userDto) {
-        UserDto updatedUser = userService.updateUser(userDto, userId);
+    public ResponseEntity<ApiResponseWithContent<UserRequestDto>> updateUser(@PathVariable Integer userId, @Valid @RequestBody UserRequestDto userDto) {
+        UserRequestDto updatedUser = userService.updateUser(userDto, userId);
         return ResponseEntity.ok(new ApiResponseWithContent<>("User updated Successfully", true, updatedUser));
     }
 
@@ -36,12 +36,12 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<ApiResponseWithContent<UserDto>> getUser(@PathVariable Integer userId) {
+    public ResponseEntity<ApiResponseWithContent<UserRequestDto>> getUser(@PathVariable Integer userId) {
         return ResponseEntity.ok(new ApiResponseWithContent<>("Query Successful", true, userService.getUserById(userId)));
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity<ApiResponseWithContent<List<UserDto>>> getAllUsers(){
+    public ResponseEntity<ApiResponseWithContent<List<UserRequestDto>>> getAllUsers(){
         return ResponseEntity.ok(new ApiResponseWithContent<>("Query Successful",true,userService.getAllUsers()));
     }
 }

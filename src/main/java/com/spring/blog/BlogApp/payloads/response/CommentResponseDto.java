@@ -1,4 +1,4 @@
-package com.spring.blog.BlogApp.payloads;
+package com.spring.blog.BlogApp.payloads.response;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CommentDto {
+public class CommentResponseDto {
     private int commentId;
     private int userId;
     private int postId;

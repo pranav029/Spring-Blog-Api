@@ -1,7 +1,7 @@
 package com.spring.blog.BlogApp.controller;
 
-import com.spring.blog.BlogApp.payloads.JwtAuthRequest;
-import com.spring.blog.BlogApp.security.JwtAuthResponse;
+import com.spring.blog.BlogApp.payloads.request.JwtAuthRequest;
+import com.spring.blog.BlogApp.payloads.response.JwtAuthResponse;
 import com.spring.blog.BlogApp.security.JwtTokenManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
