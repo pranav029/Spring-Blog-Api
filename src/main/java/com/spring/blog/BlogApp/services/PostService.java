@@ -1,25 +1,26 @@
 package com.spring.blog.BlogApp.services;
 
-import com.spring.blog.BlogApp.payloads.PagedApiResponse;
-import com.spring.blog.BlogApp.payloads.PostDto;
+import com.spring.blog.BlogApp.payloads.request.PostRequestDto;
+import com.spring.blog.BlogApp.payloads.response.PagedApiResponse;
+import com.spring.blog.BlogApp.payloads.response.PostResponseDto;
 
 import java.util.List;
 
 public interface PostService {
 
-    PostDto createPost(PostDto postDto,Integer userId,Integer categoryId);
+    PostResponseDto createPost(PostRequestDto postDto, Integer userId, Integer categoryId);
 
-    PostDto updatePost(PostDto postDto, Integer postId);
+    PostResponseDto updatePost(PostRequestDto postDto, Integer postId);
 
     void deletePost(Integer postId);
 
-    PagedApiResponse<List<PostDto>> getAllPosts(Integer pageNumber, Integer pageSize,String sortBy);
+    PagedApiResponse<List<PostResponseDto>> getAllPosts(Integer pageNumber, Integer pageSize, String sortBy);
 
-    PostDto getPostById(Integer postId);
+    PostResponseDto getPostById(Integer postId);
 
-    PagedApiResponse<List<PostDto>> getPostsByCategory(Integer categoryId,Integer pageNumber,Integer pageSize,String sortBy);
+    PagedApiResponse<List<PostResponseDto>> getPostsByCategory(Integer categoryId, Integer pageNumber, Integer pageSize, String sortBy);
 
-    PagedApiResponse<List<PostDto>> getPostsByUser(Integer userId,Integer pageNumber,Integer pageSize,String sortBy);
+    PagedApiResponse<List<PostResponseDto>> getPostsByUser(Integer userId, Integer pageNumber, Integer pageSize, String sortBy);
 
-    PagedApiResponse<List<PostDto>> searchPost(String keyword,Integer pageNumber,Integer pageSize,String sortBy);
+    PagedApiResponse<List<PostResponseDto>> searchPost(String keyword, Integer pageNumber, Integer pageSize, String sortBy);
 }

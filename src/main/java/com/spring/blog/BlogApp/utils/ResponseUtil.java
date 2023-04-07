@@ -1,6 +1,6 @@
 package com.spring.blog.BlogApp.utils;
 
-import com.spring.blog.BlogApp.payloads.PagedApiResponse;
+import com.spring.blog.BlogApp.payloads.response.PagedApiResponse;
 import org.springframework.data.domain.Page;
 
 public class ResponseUtil {
