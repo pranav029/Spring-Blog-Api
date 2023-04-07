@@ -1,4 +1,4 @@
-package com.spring.blog.BlogApp.security;
+package com.spring.blog.BlogApp.payloads.response;
 
 import lombok.Data;
 
