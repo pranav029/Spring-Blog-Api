@@ -34,49 +34,34 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        System.out.println("filter executed");
         String requestToken = request.getHeader("Authorization");
         System.out.println(requestToken);
         String userName = null;
         String token = null;
-        if(requestToken!=null && requestToken.startsWith("Bearer")){
-            token = requestToken.substring(7);
-            try{
+        try{
+            if (requestToken != null && requestToken.startsWith("Bearer")) {
+                token = requestToken.substring(7);
                 userName = jwtTokenManager.getUserNameFromToken(token);
-            }catch (IllegalArgumentException e){
-//                resolver.resolveException(request,response,null,new BlogAppJwtException("Unable to get Jwt token"));
-//                return;
-                System.out.println("Unable to get Jwt token");
-            }catch (ExpiredJwtException e){
-//                 resolver.resolveException(request,response,null,new BlogAppJwtException("Jwt token has expired"));
-//                 return;
-                System.out.println("Jwt token has expired");
-            }catch (MalformedJwtException e){
-//                resolver.resolveException(request,response,null,new BlogAppJwtException("Invalid jwt"));
-//                return;
-                System.out.println("Invalid jwt");
+            } else {
+                System.out.println("Jwt token does not begin with Bearer");
             }
-        }else{
-//            resolver.resolveException(request,response,null,new BlogAppJwtException("Jwt token does not begin with Bearer"));
-//            return;
-            System.out.println("Jwt token does not begin with Bearer");
-        }
 
-        if(userName!=null && SecurityContextHolder.getContext().getAuthentication()==null){
-            UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
-            if(jwtTokenManager.validateToken(token,userDetails)){
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
-                usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-            }else {
-//                resolver.resolveException(request,response,null,new BlogAppJwtException("Invalid jwt token"));
-//                return;
-                System.out.println("Invalid jwt token");
+            if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
+                if (jwtTokenManager.validateToken(token, userDetails)) {
+                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                } else {
+
+                    System.out.println("Invalid jwt token");
+                }
+            } else {
+                System.out.println("Username is null or context is not null");
             }
-        }else{
-            System.out.println("Username is null or context is not null");
-//            resolver.resolveException(request,response,null,new BlogAppJwtException("Internal Jwt Error"));
-//            return;
-            System.out.println("Internal Jwt Error");
+        }catch (Exception e){
+            System.out.println(e.getMessage());
         }
 
         filterChain.doFilter(request,response);

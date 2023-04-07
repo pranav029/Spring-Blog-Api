@@ -1,8 +1,8 @@
 package com.spring.blog.BlogApp.exceptions;
 
+
 import com.spring.blog.BlogApp.payloads.ApiResponse;
 import com.spring.blog.BlogApp.payloads.ApiResponseWithContent;
-import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -10,7 +10,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
@@ -38,8 +37,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new ApiResponse("Invalid username or password!",false),HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(BlogAppJwtException.class)
-    public ResponseEntity<ApiResponse> jwtException(BlogAppJwtException e){
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ApiResponse> jwtException(AuthenticationException e){
         return new ResponseEntity<>(new ApiResponse(e.getMessage(),false),HttpStatus.UNAUTHORIZED);
     }
 }
