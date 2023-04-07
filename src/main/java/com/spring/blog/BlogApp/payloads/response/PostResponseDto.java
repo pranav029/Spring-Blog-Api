@@ -1,6 +1,7 @@
-package com.spring.blog.BlogApp.payloads;
+package com.spring.blog.BlogApp.payloads.response;
 
-import com.spring.blog.BlogApp.entities.Comment;
+import com.spring.blog.BlogApp.payloads.CategoryDto;
+import com.spring.blog.BlogApp.payloads.CommentDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,13 +13,13 @@ import java.util.Set;
 @Setter
 @Getter
 @NoArgsConstructor
-public class PostDto {
+public class PostResponseDto {
     private Integer postId;
     private String title;
     private String content;
     private String imageName;
     private Date creationDate;
     private CategoryDto category;
-    private UserDto user;
+    private UserResponseDto user;
     private Set<CommentDto> comments = new HashSet<>();
 }

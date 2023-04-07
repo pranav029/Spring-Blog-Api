@@ -1,6 +1,6 @@
 package com.spring.blog.BlogApp.controller;
 
-import com.spring.blog.BlogApp.payloads.ApiResponseWithContent;
+import com.spring.blog.BlogApp.payloads.response.ApiResponseWithContent;
 import com.spring.blog.BlogApp.payloads.CategoryDto;
 import com.spring.blog.BlogApp.services.CategoryService;
 import jakarta.validation.Valid;
