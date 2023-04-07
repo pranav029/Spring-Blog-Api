@@ -1,8 +1,8 @@
 package com.spring.blog.BlogApp.exceptions;
 
 
-import com.spring.blog.BlogApp.payloads.ApiResponse;
-import com.spring.blog.BlogApp.payloads.ApiResponseWithContent;
+import com.spring.blog.BlogApp.payloads.response.ApiResponse;
+import com.spring.blog.BlogApp.payloads.response.ApiResponseWithContent;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
