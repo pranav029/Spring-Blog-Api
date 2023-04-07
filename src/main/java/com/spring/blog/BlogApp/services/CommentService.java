@@ -1,9 +1,9 @@
 package com.spring.blog.BlogApp.services;
 
-import com.spring.blog.BlogApp.entities.Comment;
-import com.spring.blog.BlogApp.payloads.CommentDto;
+import com.spring.blog.BlogApp.payloads.request.CommentRequestDto;
+import com.spring.blog.BlogApp.payloads.response.CommentResponseDto;
 
 public interface CommentService {
-    CommentDto createComment(CommentDto comment, Integer postId,Integer userId);
+    CommentResponseDto createComment(CommentRequestDto comment, Integer postId, Integer userId);
     void deleteComment(Integer commentId);
 }
