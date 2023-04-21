@@ -3,14 +3,19 @@ package com.spring.blog.BlogApp.services.impl;
 import com.spring.blog.BlogApp.entities.Category;
 import com.spring.blog.BlogApp.exceptions.ResourceNotFoundException;
 import com.spring.blog.BlogApp.payloads.CategoryDto;
+import com.spring.blog.BlogApp.payloads.response.PagedApiResponse;
 import com.spring.blog.BlogApp.repositories.CategoryRepo;
 import com.spring.blog.BlogApp.services.CategoryService;
+import com.spring.blog.BlogApp.utils.ResponseUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -47,8 +52,10 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryDto> getCategories() {
-        List<Category> categories = categoryRepo.findAll();
-        return categories.stream().map(category -> modelMapper.map(category, CategoryDto.class)).collect(Collectors.toList());
+    public PagedApiResponse<List<CategoryDto>> getCategories(Integer pageNumber, Integer pageSize, String sortBy) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).ascending());
+        Page<Category> pagedCategory = categoryRepo.findAll(pageable);
+        List<CategoryDto> categories = pagedCategory.getContent().stream().map(category -> modelMapper.map(category, CategoryDto.class)).toList();
+        return ResponseUtil.getPagedApiResponse(pagedCategory, categories);
     }
 }

@@ -1,6 +1,7 @@
 package com.spring.blog.BlogApp.services;
 
 import com.spring.blog.BlogApp.payloads.CategoryDto;
+import com.spring.blog.BlogApp.payloads.response.PagedApiResponse;
 
 import java.util.List;
 
@@ -11,5 +12,5 @@ public interface CategoryService {
 
     void deleteCategory(Integer categoryId);
     CategoryDto getCategory(Integer categoryId);
-    List<CategoryDto> getCategories();
+    PagedApiResponse<List<CategoryDto>> getCategories(Integer pageNumber, Integer pageSize, String sortBy);
 }

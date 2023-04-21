@@ -2,6 +2,7 @@ package com.spring.blog.BlogApp.controller;
 
 import com.spring.blog.BlogApp.payloads.response.ApiResponseWithContent;
 import com.spring.blog.BlogApp.payloads.CategoryDto;
+import com.spring.blog.BlogApp.payloads.response.PagedApiResponse;
 import com.spring.blog.BlogApp.services.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,26 +25,31 @@ public class CategoryController {
     }
 
     @PutMapping("/update/{catId}")
-    public ResponseEntity<ApiResponseWithContent<CategoryDto>> updateCategory(@Valid @RequestBody CategoryDto categoryDto, @PathVariable Integer catId){
-        CategoryDto updatedCategory = categoryService.updateCategory(categoryDto,catId);
-        return new ResponseEntity<>(new ApiResponseWithContent<>("Category Updated Successfully",true,updatedCategory),HttpStatus.OK);
+    public ResponseEntity<ApiResponseWithContent<CategoryDto>> updateCategory(@Valid @RequestBody CategoryDto categoryDto, @PathVariable Integer catId) {
+        CategoryDto updatedCategory = categoryService.updateCategory(categoryDto, catId);
+        return new ResponseEntity<>(new ApiResponseWithContent<>("Category Updated Successfully", true, updatedCategory), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{catId}")
-    public ResponseEntity<ApiResponseWithContent<?>> deleteCategory(@PathVariable Integer catId){
+    public ResponseEntity<ApiResponseWithContent<?>> deleteCategory(@PathVariable Integer catId) {
         categoryService.deleteCategory(catId);
-        return ResponseEntity.ok(new ApiResponseWithContent<>("Category deleted successfully",true,null));
+        return ResponseEntity.ok(new ApiResponseWithContent<>("Category deleted successfully", true, null));
     }
 
     @GetMapping("/{catId}")
-    public ResponseEntity<ApiResponseWithContent<CategoryDto>> getCategory(@PathVariable Integer catId){
+    public ResponseEntity<ApiResponseWithContent<CategoryDto>> getCategory(@PathVariable Integer catId) {
         CategoryDto categoryDto = categoryService.getCategory(catId);
-        return ResponseEntity.ok(new ApiResponseWithContent<>("Query Successful",true,categoryDto));
+        return ResponseEntity.ok(new ApiResponseWithContent<>("Query Successful", true, categoryDto));
     }
+
     @GetMapping("/all-categories")
-    public ResponseEntity<ApiResponseWithContent<?>> getAllCategory(){
-        List<CategoryDto> categories = categoryService.getCategories();
-        return ResponseEntity.ok(new ApiResponseWithContent<>("Query Successful",true,categories));
+    public ResponseEntity<PagedApiResponse<List<CategoryDto>>> getAllCategory(
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "categoryId", required = false) String sortBy
+    ) {
+        PagedApiResponse<List<CategoryDto>> response = categoryService.getCategories(pageNumber, pageSize, sortBy);
+        return ResponseEntity.ok(response);
     }
 
 }
