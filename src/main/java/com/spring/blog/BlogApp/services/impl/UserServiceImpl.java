@@ -3,10 +3,17 @@ package com.spring.blog.BlogApp.services.impl;
 import com.spring.blog.BlogApp.entities.User;
 import com.spring.blog.BlogApp.exceptions.ResourceNotFoundException;
 import com.spring.blog.BlogApp.payloads.request.UserRequestDto;
+import com.spring.blog.BlogApp.payloads.response.PagedApiResponse;
+import com.spring.blog.BlogApp.payloads.response.UserResponseDto;
 import com.spring.blog.BlogApp.repositories.UserRepo;
 import com.spring.blog.BlogApp.services.UserService;
+import com.spring.blog.BlogApp.utils.ResponseUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,9 +52,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserRequestDto> getAllUsers() {
-        List<User> users = userRepo.findAll();
-        return users.stream().map(user -> modelMapper.map(user, UserRequestDto.class)).collect(Collectors.toList());
+    public PagedApiResponse<List<UserResponseDto>> getAllUsers(Integer pageNumber, Integer pageSize, String sortBy) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).ascending());
+        Page<User> pagedUsers = userRepo.findAll(pageable);
+        List<UserResponseDto> users = pagedUsers.getContent().stream().map(user -> modelMapper.map(user,UserResponseDto.class)).toList();
+        return ResponseUtil.getPagedApiResponse(pagedUsers,users);
     }
 
     @Override

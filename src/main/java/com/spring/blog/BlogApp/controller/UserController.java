@@ -2,6 +2,8 @@ package com.spring.blog.BlogApp.controller;
 
 import com.spring.blog.BlogApp.payloads.response.ApiResponseWithContent;
 import com.spring.blog.BlogApp.payloads.request.UserRequestDto;
+import com.spring.blog.BlogApp.payloads.response.PagedApiResponse;
+import com.spring.blog.BlogApp.payloads.response.UserResponseDto;
 import com.spring.blog.BlogApp.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +43,11 @@ public class UserController {
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity<ApiResponseWithContent<List<UserRequestDto>>> getAllUsers(){
-        return ResponseEntity.ok(new ApiResponseWithContent<>("Query Successful",true,userService.getAllUsers()));
+    public ResponseEntity<PagedApiResponse<List<UserResponseDto>>> getAllUsers(
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "userId", required = false) String sortBy
+    ) {
+        return ResponseEntity.ok(userService.getAllUsers(pageNumber, pageSize, sortBy));
     }
 }
