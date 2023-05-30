@@ -2,11 +2,13 @@ package com.spring.blog.BlogApp.configs;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.BeanDefinitionDsl;
 
+@ConfigurationProperties("application")
 @Configuration
 public class ModelConfig {
     @Bean

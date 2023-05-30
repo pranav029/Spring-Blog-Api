@@ -1,10 +1,13 @@
 package com.spring.blog.BlogApp.services.impl;
 
+import com.spring.blog.BlogApp.entities.Follower;
 import com.spring.blog.BlogApp.entities.User;
 import com.spring.blog.BlogApp.exceptions.ResourceNotFoundException;
 import com.spring.blog.BlogApp.payloads.request.UserRequestDto;
+import com.spring.blog.BlogApp.payloads.response.FollowerResponseDto;
 import com.spring.blog.BlogApp.payloads.response.PagedApiResponse;
 import com.spring.blog.BlogApp.payloads.response.UserResponseDto;
+import com.spring.blog.BlogApp.repositories.FollowerRepo;
 import com.spring.blog.BlogApp.repositories.UserRepo;
 import com.spring.blog.BlogApp.services.UserService;
 import com.spring.blog.BlogApp.utils.ResponseUtil;
@@ -17,7 +20,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -27,42 +29,67 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private FollowerRepo followerRepo;
+
     @Override
-    public UserRequestDto createUser(UserRequestDto userDto) {
+    public UserResponseDto createUser(UserRequestDto userDto) {
         User user = modelMapper.map(userDto, User.class);
         User savedUser = userRepo.save(user);
-        return modelMapper.map(savedUser, UserRequestDto.class);
+        return modelMapper.map(savedUser, UserResponseDto.class);
     }
 
     @Override
-    public UserRequestDto updateUser(UserRequestDto userDto, Integer id) {
+    public UserResponseDto updateUser(UserRequestDto userDto, Integer id) {
         User user = userRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
         user.setName(userDto.getName());
         user.setEmail(userDto.getEmail());
         user.setPassword(userDto.getPassword());
         user.setAbout(userDto.getAbout());
         User updatedUser = userRepo.save(user);
-        return modelMapper.map(updatedUser, UserRequestDto.class);
+        return modelMapper.map(updatedUser, UserResponseDto.class);
     }
 
     @Override
-    public UserRequestDto getUserById(Integer id) {
+    public UserResponseDto getUserById(Integer id) {
         User user = userRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", "Id", id));
-        return modelMapper.map(user, UserRequestDto.class);
+        return modelMapper.map(user, UserResponseDto.class);
     }
 
     @Override
     public PagedApiResponse<List<UserResponseDto>> getAllUsers(Integer pageNumber, Integer pageSize, String sortBy) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).ascending());
         Page<User> pagedUsers = userRepo.findAll(pageable);
-        List<UserResponseDto> users = pagedUsers.getContent().stream().map(user -> modelMapper.map(user,UserResponseDto.class)).toList();
-        return ResponseUtil.getPagedApiResponse(pagedUsers,users);
+        List<UserResponseDto> users = pagedUsers.getContent().stream().map(user -> modelMapper.map(user, UserResponseDto.class)).toList();
+        return ResponseUtil.getPagedApiResponse(pagedUsers, users);
     }
 
     @Override
     public void deleteUser(UserRequestDto userDto) {
         User user = userRepo.findById(userDto.getUserId()).orElseThrow(() -> new ResourceNotFoundException("User", "Id", userDto.getUserId()));
         userRepo.delete(user);
+    }
+
+    @Override
+    public PagedApiResponse<FollowerResponseDto> getAllFollowers(Integer userId, Integer pageNumber, Integer pageSize, String sortBy) {
+        User user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "Id", userId));
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).ascending());
+        Page<Follower> pagedFollower = followerRepo.findAllByUserFollowed(user,pageable);
+        FollowerResponseDto followerResponseDto = new FollowerResponseDto(
+                userId,
+                pagedFollower.getContent().stream().map(follower -> modelMapper.map(follower.getUserFollower(), UserResponseDto.class))
+                        .toList()
+        );
+        return ResponseUtil.getPagedApiResponse(pagedFollower,followerResponseDto);
+    }
+
+    @Override
+    public void addFollower(Integer userId, Integer followerId) {
+        User user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "Id", userId));
+        User follower = userRepo.findById(followerId).orElseThrow(() -> new ResourceNotFoundException("Follower", "Id", followerId));
+        followerRepo.save(
+                new Follower(userId, user, follower)
+        );
     }
 
     @Override
